@@ -32,7 +32,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import gettext as _
 
 from django.conf import settings
-from django.utils import simplejson
+import json
 
 from django.contrib.sites.models import Site
 
@@ -341,7 +341,7 @@ class OAuthTwitter(OAuth):
     url = 'https://twitter.com/account/verify_credentials.json'
 
     def get_user_info(self):
-        user = simplejson.loads(self.query(self.url))
+        user = json.loads(self.query(self.url))
         return user
 
 class OAuthLinkedIn(OAuthTwitter):
