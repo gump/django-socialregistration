@@ -5,7 +5,7 @@ Updated on 19.12.2009
 @author: alen, pinda
 """
 from django.conf import settings
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from socialregistration.utils import OpenID, OAuthClient, OAuthTwitter, OAuthLinkedIn
 
