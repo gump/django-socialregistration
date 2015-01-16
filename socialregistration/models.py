@@ -1,21 +1,20 @@
 from django.db import models
 from django.conf import settings
 
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, get_user_model
 from django.contrib.sites.models import Site
 
 from socialregistration.signals import login, connect
 
 class FacebookProfile(models.Model):
-    user = models.ForeignKey(User, unique = True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique = True)
     site = models.ForeignKey(Site, default=Site.objects.get_current)
     uid = models.CharField(max_length=255, blank=False, null=False)
 
     def __unicode__(self):
         try:
             return u'%s: %s' % (self.user, self.uid)
-        except User.DoesNotExist:
+        except get_user_model().DoesNotExist:
             return u'None'
 
     def authenticate(self):
@@ -26,14 +25,14 @@ class FacebookAccessToken(models.Model):
     access_token = models.CharField(max_length=255)
 
 class TwitterProfile(models.Model):
-    user = models.ForeignKey(User, unique = True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique = True)
     site = models.ForeignKey(Site, default=Site.objects.get_current)
     twitter_id = models.PositiveIntegerField()
 
     def __unicode__(self):
         try:
             return u'%s: %s' % (self.user, self.twitter_id)
-        except User.DoesNotExist:
+        except get_user_model().DoesNotExist:
             return u'None'
 
     def authenticate(self):
@@ -50,14 +49,14 @@ class TwitterAccessToken(models.Model):
     oauth_token_secret = models.CharField(max_length=80)
 
 class LinkedInProfile(models.Model):
-    user = models.ForeignKey(User, unique = True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique = True)
     site = models.ForeignKey(Site, default=Site.objects.get_current)
     linkedin_id = models.CharField(max_length=25)
 
     def __unicode__(self):
         try:
             return u'%s: %s' % (self.user, self.linkedin_id)
-        except User.DoesNotExist:
+        except get_user_model().DoesNotExist:
             return u'None'
 
     def authenticate(self):
@@ -74,14 +73,14 @@ class LinkedInAccessToken(models.Model):
     oauth_token_secret = models.CharField(max_length=80)
 
 class OpenIDProfile(models.Model):
-    user = models.ForeignKey(User, unique = True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, unique = True)
     site = models.ForeignKey(Site, default=Site.objects.get_current)
     identity = models.TextField()
 
     def __unicode__(self):
         try:
             return 'OpenID profile for %s, via provider %s' % (self.user, self.identity)
-        except User.DoesNotExist:
+        except get_user_model().DoesNotExist:
             return 'OpenID profile for None, via provider None' 
 
     def authenticate(self):

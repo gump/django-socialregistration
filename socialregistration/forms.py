@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext as _
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 class UserForm(forms.Form):
     username = forms.RegexField(r'^\w+$', max_length=32)
@@ -15,8 +15,8 @@ class UserForm(forms.Form):
     def clean_username(self):
         username = self.cleaned_data.get('username')
         try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
+            user = get_user_model().objects.get(username=username)
+        except get_user_model().DoesNotExist:
             return username
         else:
             raise forms.ValidationError(_('This username is already in use.'))

@@ -13,8 +13,7 @@ try:
 except ImportError:
     has_csrf = False
 
-from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate, logout as auth_logout
+from django.contrib.auth import get_user_model, login, authenticate, logout as auth_logout
 from django.contrib.sites.models import Site
 
 from socialregistration.forms import UserForm
@@ -138,7 +137,7 @@ def facebook_login(request, template='socialregistration/facebook.html',
     user = authenticate(uid=request.facebook.uid)
 
     if user is None:
-        request.session['socialregistration_user'] = User()
+        request.session['socialregistration_user'] = get_user_model()()
         request.session['socialregistration_profile'] = FacebookProfile(uid=request.facebook.uid)
         request.session['socialregistration_client'] = request.facebook
         request.session['next'] = _get_next(request)
@@ -213,7 +212,7 @@ def twitter(request, account_inactive_template='socialregistration/account_inact
 
     if user is None:
         profile = TwitterProfile(twitter_id=user_info['id'])
-        user = User()
+        user = get_user_model()()
         request.session['socialregistration_profile'] = profile
         request.session['socialregistration_user'] = user
         # Client is not pickleable with the request on it
@@ -262,7 +261,7 @@ def linkedin(request, account_inactive_template='socialregistration/account_inac
 
     if user is None:
         profile = LinkedInProfile(linkedin_id=user_info['id'])
-        user = User()
+        user = get_user_model()()
         request.session['socialregistration_profile'] = profile
         request.session['socialregistration_user'] = user
         # Client is not pickleable with the request on it
@@ -366,7 +365,7 @@ def openid_callback(request, template='socialregistration/openid.html',
 
         user = authenticate(identity=identity)
         if user is None:
-            request.session['socialregistration_user'] = User()
+            request.session['socialregistration_user'] = get_user_model()()
             request.session['socialregistration_profile'] = OpenIDProfile(
                 identity=identity
             )
